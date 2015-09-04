@@ -5,5 +5,8 @@
   "refresh_seconds": 10,
   "actors": {
     "list_length": 13
+  },
+  "github": {
+    "api_path": "orgs/elastic/events"
   }
 }

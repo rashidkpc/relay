@@ -37,7 +37,7 @@ module.exports = function (server) {
 
   function indexGithubAPI() {
 
-    var endpoint = 'orgs/elastic/events';
+    var endpoint = config.github.api_path;
     var URL = 'https://api.github.com/' + endpoint;
     return fetch(URL).then(function (resp) { return resp.json(); }).then(function (resp) {
 
@@ -49,7 +49,7 @@ module.exports = function (server) {
           body: event,
           timestamp: event.created_at,
           ttl: '1d'
-        });
+        }).catch(function (e) {});
       });
     });
   }
