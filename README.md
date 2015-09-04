@@ -1,2 +1,2 @@
-# impact
-Experimental Kibana app for measuring contributor impact on a Github organization
+# relay
+Experimental Kibana app for measuring contributor impact and team progress on a Github organization

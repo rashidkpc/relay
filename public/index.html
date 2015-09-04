@@ -1,0 +1,62 @@
+<div class="relay" ng-controller="relay">
+  <h1>
+    <strong>{{config.goal - impact | number: 1}}</strong> of <strong>{{config.goal}}</strong>
+    <small>points remaining in this 1d cycle <i class="fa fa-refresh" ng-click="getScores()"></i></small>
+  </h1>
+  <p>Points measure the relative value of events stored in elasticsearch. Points are determined by tunable blocks. To add a block or influence the weight of a block on the point value see the <code>blocks/</code> directory.</p>
+  <div class="row">
+    <div class="col-md-7 relay-charts">
+      <h4>Goal progress</h4>
+      <div ng-if="config" chart="burn" height=250></div>
+      <h4>Points per {{config.chart_interval}}</h4>
+      <div ng-if="config" chart="timeline" height=250></div>
+    </div>
+    <div class="col-md-5">
+      <h4>Actors</h4>
+      <form>
+        <input placeholder="Filter actors ..." ng-model="actorFilter" class="form-control">
+      </form>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Actor</th>
+            <th>Events</th>
+            <th>Points</th>
+            <th>Distribution</th>
+          </tr>
+        </thead>
+        <tr ng-repeat="actor in actors | filter:actorFilter | limitTo:config.actors.list_length | orderBy:'name'">
+          <td>
+            {{actor.name}}
+          </td>
+          <td width="1%">
+            {{actor.count}}
+          </td>
+          <td width="1%">
+            {{actor.impact | number:1}}
+          </td>
+          <td width="60%">
+            <div class="impact-container">
+              <div class="impact-rank" style="width: {{100 * (actor.impact / actors[0].impact)}}%">
+                <kbn-tooltip text="{{block.count}} {{block.name}} ({{(block.impact / actor.impact) * 100 | number:0}}%)" placement="bottom" append-to-body="1"
+                  class="impact-block"
+                  ng-repeat="block in actor.explanation.blocks"
+                  ng-show="block.count > 0"
+                  style="width: {{100 * (block.impact / actor.impact)}}%; background-color: {{blocks[block.name].color}}; height: 100%">
+                </kbn-tooltip>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="pull-right">
+    <span
+      class="label label-default"
+      ng-repeat="block in blocks"
+      ng-style="{'background-color': block.color}">
+      {{block.name}}
+    </span>
+  </div>
+</div>

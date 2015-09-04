@@ -1,0 +1,9 @@
+{
+  "index": ".gitboard_events",
+  "goal": 500,
+  "chart_interval": "10m",
+  "refresh_seconds": 10,
+  "actors": {
+    "list_length": 13
+  }
+}
