@@ -4,7 +4,7 @@
   "chart_interval": "10m",
   "refresh_seconds": 10,
   "actors": {
-    "list_length": 13
+    "list_length": 18
   },
   "github": {
     "api_path": "orgs/elastic/events"

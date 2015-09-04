@@ -7,9 +7,35 @@
   <div class="row">
     <div class="col-md-7 relay-charts">
       <h4>Goal progress</h4>
-      <div ng-if="config" chart="burn" height=250></div>
+      <div ng-if="config" chart="burn" height=150></div>
       <h4>Points per {{config.chart_interval}}</h4>
-      <div ng-if="config" chart="timeline" height=250></div>
+      <div ng-if="config" chart="timeline" height=150></div>
+      <h4>Recent Events</h4>
+      <div>
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Actor</th>
+              <th>Score</th>
+              <th>Blocks</th>
+            </tr>
+          </thead>
+          <tr ng-repeat="event in events.hits">
+            <td>{{event._timestamp|date:'short'}}</td>
+            <td>{{event._source.actor.login}}</td>
+            <td>{{event._score}}</td>
+            <td width="50%">
+              <span ng-repeat="type in event.matched_queries"
+                class="label"
+                style="background-color: {{blocks[type].color}}">
+                {{type}}
+              </span>
+            </td>
+          </tr>
+        </table>
+
+      </div>
     </div>
     <div class="col-md-5">
       <h4>Actors</h4>

@@ -46,6 +46,7 @@ app.controller('relay', function ($scope, $http, $timeout) {
     $http.get('/relay/scores').then(function (resp) {
       $scope.impact = resp.data.impact;
       $scope.actors = resp.data.actors;
+      $scope.events = resp.data.events;
 
       var goalCursor = $scope.config.goal;
       var goalBurn = _.map(resp.data.timeline, function (point) {
