@@ -26,7 +26,6 @@ module.exports = function (server) {
     body: {
       mappings: {
         event: {
-          _ttl: { enabled : true, 'default': '1d' },
           _timestamp: { enabled: true }
         }
       }
@@ -47,8 +46,7 @@ module.exports = function (server) {
           type: 'event',
           id: event.id,
           body: event,
-          timestamp: event.created_at,
-          ttl: '1d'
+          timestamp: event.created_at
         }).catch(function (e) {});
       });
     });

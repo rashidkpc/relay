@@ -43,7 +43,7 @@ function createBody() {
                 }
               },
               functions: functions,
-              score_mode: 'max',
+              score_mode: 'sum',
               boost_mode: 'replace'
             }
           },

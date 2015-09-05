@@ -14,7 +14,7 @@ app.directive('chart', function ($compile) {
       goal: '=',
       height: '=',
       min: '=',
-      max: '='
+      max: '=',
     },
     link: function ($scope, $elem) {
       console.log('loaded chart');
@@ -42,7 +42,8 @@ app.directive('chart', function ($compile) {
         yaxis: {
           min: $scope.min || 0,
           max: $scope.max,
-          font: { size: 13, color: '#666' }
+          font: { size: 13, color: '#666' },
+          show: false
 
         },
         colors: ['#8c8'],

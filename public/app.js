@@ -48,10 +48,10 @@ app.controller('relay', function ($scope, $http, $timeout) {
       $scope.actors = resp.data.actors;
       $scope.events = resp.data.events;
 
-      var goalCursor = $scope.config.goal;
+      var goalCursor = 0;
       var goalBurn = _.map(resp.data.timeline, function (point) {
-        goalCursor = goalCursor - point[1];
-        return [point[0], goalCursor];
+        goalCursor = goalCursor + point[1];
+        return [point[0], (goalCursor / $scope.config.goal) * 100];
       });
       $scope.burn = [{data: goalBurn, shadowSize:0, lines: {lineWidth: 6}}];
       $scope.timeline = [{data: resp.data.timeline, shadowSize:0, lines: {lineWidth: 6}}];

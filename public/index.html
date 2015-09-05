@@ -1,28 +1,29 @@
 <div class="relay" ng-controller="relay">
-  <h1>
-    <strong>{{config.goal - impact | number: 1}}</strong> of <strong>{{config.goal}}</strong>
-    <small>points remaining in this 1d cycle <i class="fa fa-refresh" ng-click="getScores()"></i></small>
+  <h1 ng-show="impact > -1">
+    <strong>{{(impact/config.goal)*100 | number: 1}}%</strong>
+    <small>project health over last 1d</small>
   </h1>
   <p>Points measure the relative value of events stored in elasticsearch. Points are determined by tunable blocks. To add a block or influence the weight of a block on the point value see the <code>blocks/</code> directory.</p>
   <div class="row">
     <div class="col-md-7 relay-charts">
-      <h4>Goal progress</h4>
+      <h4>Project Health</h4>
       <div ng-if="config" chart="burn" height=150></div>
-      <h4>Points per {{config.chart_interval}}</h4>
+      <h4>Activity</h4>
       <div ng-if="config" chart="timeline" height=150></div>
       <h4>Recent Events</h4>
       <div>
-        <table class="table table-condensed table-bordered">
+        <table class="table table-condensed table-striped">
           <thead>
             <tr>
               <th>Timestamp</th>
-              <th>Actor</th>
+              <th colspan=2>Actor</th>
               <th>Score</th>
               <th>Blocks</th>
             </tr>
           </thead>
           <tr ng-repeat="event in events.hits">
             <td>{{event._timestamp|date:'short'}}</td>
+            <td width="1%"><img class="avatar" height=20 width=20 src="https://avatars.githubusercontent.com/{{event._source.actor.login}}"></td>
             <td>{{event._source.actor.login}}</td>
             <td>{{event._score}}</td>
             <td width="50%">
@@ -45,13 +46,16 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>Actor</th>
+            <th colspan=2>Actor</th>
             <th>Events</th>
             <th>Points</th>
-            <th>Distribution</th>
+            <th>Block Distribution</th>
           </tr>
         </thead>
         <tr ng-repeat="actor in actors | filter:actorFilter | limitTo:config.actors.list_length | orderBy:'name'">
+          <td width="1%">
+            <img class="avatar" height=20 width=20 src="https://avatars.githubusercontent.com/{{actor.name}}">
+          </td>
           <td>
             {{actor.name}}
           </td>
