@@ -4,6 +4,8 @@ var logoUrl = require('./logo.png');
 
 require('./main.less');
 require('./chart_directive.js');
+require('ui/filters/trust_as_html');
+
 var config = require('json!../relay.json');
 
 var impactLogo = require('plugins/relay/impact.png');
@@ -25,12 +27,16 @@ require('ui/routes')
     template: require('plugins/relay/index.html'),
   });
 
-app.controller('relay', function ($scope, $http, $timeout) {
+app.controller('relay', function ($scope, $http, $timeout, $sce) {
 
   $scope.config = config;
 
   $http.get('/relay/blocks').then(function (resp) {
-    $scope.blocks = _.indexBy(resp.data, 'name');
+    var blockContext = require.context('../blocks');
+    $scope.blockDefs = _.chain(blockContext.keys()).map(function (blockFile) {
+      return blockContext(blockFile);
+    }).indexBy('name').value();
+
     scoreTimer();
   });
 
@@ -46,7 +52,14 @@ app.controller('relay', function ($scope, $http, $timeout) {
     $http.get('/relay/scores').then(function (resp) {
       $scope.impact = resp.data.impact;
       $scope.actors = resp.data.actors;
-      $scope.events = resp.data.events;
+      $scope.blocks = _.map(resp.data.blocks, function (block) {
+        return _.extend(block, {blockDef: $scope.blockDefs[block.name]});
+      });
+      $scope.events = _.each(resp.data.events.hits, function (event) {
+        _.extend(event, {blocks: _.map(event.matched_queries, function (blockName) {
+            return $scope.blockDefs[blockName];
+          })});
+      });
 
       var goalCursor = 0;
       var goalBurn = _.map(resp.data.timeline, function (point) {

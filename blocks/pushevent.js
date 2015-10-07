@@ -9,5 +9,5 @@ module.exports = new ImpactBlock ('Push', {
     },
     weight: 1.6
   },
-  color: '#FFD34E'
+  color: '#FFD34E',
 });

@@ -1,10 +1,10 @@
 {
   "index": ".gitboard_events",
-  "goal": 500,
+  "goal": 900,
   "chart_interval": "10m",
   "refresh_seconds": 10,
   "actors": {
-    "list_length": 18
+    "list_length": 10
   },
   "github": {
     "api_path": "orgs/elastic/events"

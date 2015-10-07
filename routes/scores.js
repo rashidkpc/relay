@@ -3,7 +3,7 @@ var client = new elasticsearch.Client({
   host: 'http://localhost:9200/'
 });
 var _ = require('lodash');
-var loadScoreFilters = require('../lib/load_score_filters.js');
+var loadMethods = require('../lib/load_methods.js');
 var config = require('../relay.json');
 /*
   Knobs contain:
@@ -16,7 +16,7 @@ var config = require('../relay.json');
   So to reduce the score from the basis, return a sum of all functions that is < 1, to increase, > 1
 */
 
-var blocks = loadScoreFilters();
+var blocks = loadMethods('blocks');
 
 function createBody() {
   var filters = _.map(blocks, function (block) {
@@ -64,6 +64,19 @@ function createBody() {
       }
     },
     aggs: {
+      blocks: {
+        filters: {
+          filters: filtersAgg
+        },
+        aggs: {
+          block_score: {
+            sum: {
+              script: '_score',
+              lang: 'expression'
+            }
+          }
+        }
+      },
       timeline: {
         date_histogram: {
           field: '_timestamp',
@@ -158,7 +171,17 @@ module.exports = function (request, reply) {
       return [bucket.key, bucket.score.value];
     });
 
+    var blocks = _.map(result.aggregations.blocks.buckets, function (block, blockName) {
+      return {
+        name: blockName,
+        count: block.doc_count,
+        impact: block.block_score.value,
+        impact_percent: block.block_score.value / config.goal
+      };
+    });
+
     reply({
+      blocks: blocks,
       impact: result.aggregations.score.value,
       actors: impact,
       timeline: timeline,

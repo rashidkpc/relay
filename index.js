@@ -8,13 +8,14 @@ module.exports = function (kibana) {
       app: {
         title: 'Relay',
         description: 'Team progress scoreboard',
-        icon: 'plugins/relay/impact.png',
+        //icon: 'plugins/relay/icon.svg',
         main: 'plugins/relay/app',
         injectVars: function (server, options) {
           var config = server.config();
           return {
             kbnIndex: config.get('kibana.index'),
-            esShardTimeout: config.get('elasticsearch.shardTimeout')
+            esShardTimeout: config.get('elasticsearch.shardTimeout'),
+            esApiVersion: config.get('elasticsearch.apiVersion')
           };
         }
       },

@@ -21,5 +21,10 @@ module.exports = new ImpactBlock ('Issue Closed', {
     },
     weight: 0.75
   },
-  color: '#616161'
+  color: '#616161',
+  toHTML: function (event) {
+    return '<a target="_blank" href="' + event._source.payload.issue.html_url + '">' +
+    event._source.repo.name + '#' +
+    event._source.payload.issue.number + '</a>';
+  }
 });

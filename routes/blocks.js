@@ -1,5 +1,5 @@
-var loadScoreFilters = require('../lib/load_score_filters.js');
+var loadMethods = require('../lib/load_methods.js');
 
 module.exports = function (request, reply) {
-  reply(loadScoreFilters());
+  reply(loadMethods('blocks'));
 };

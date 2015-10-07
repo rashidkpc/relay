@@ -7,7 +7,7 @@
   <div class="row">
     <div class="col-md-7 relay-charts">
       <h4>Project Health</h4>
-      <div ng-if="config" chart="burn" height=150></div>
+      <div ng-if="config" chart="burn" height=150 max=100></div>
       <h4>Activity</h4>
       <div ng-if="config" chart="timeline" height=150></div>
       <h4>Recent Events</h4>
@@ -17,21 +17,21 @@
             <tr>
               <th>Timestamp</th>
               <th colspan=2>Actor</th>
-              <th>Score</th>
-              <th>Blocks</th>
+              <th>Points</th>
+              <th>Details</th>
             </tr>
           </thead>
-          <tr ng-repeat="event in events.hits">
+          <tr ng-repeat="event in events">
             <td>{{event._timestamp|date:'short'}}</td>
-            <td width="1%"><img class="avatar" height=20 width=20 src="https://avatars.githubusercontent.com/{{event._source.actor.login}}"></td>
-            <td>{{event._source.actor.login}}</td>
+            <td width="1%"><img class="avatar" height=20 width=20 src="https://avatars.githubusercontent.com/{{event._actor || event._source.actor.login}}"></td>
+            <td>{{event._actor || event._source.actor.login}}</td>
             <td>{{event._score}}</td>
-            <td width="50%">
-              <span ng-repeat="type in event.matched_queries"
-                class="label"
-                style="background-color: {{blocks[type].color}}">
-                {{type}}
+            <td>
+              <span ng-repeat="block in event.blocks">
+                <i class="fa fa-circle" style="color: {{block.color}}"></i>
+                <span ng-bind-html='block.toHTML(event)|trustAsHtml'></span>
               </span>
+
             </td>
           </tr>
         </table>
@@ -39,6 +39,40 @@
       </div>
     </div>
     <div class="col-md-5">
+      <h4>Blocks</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th colspan=2>Block</th>
+            <th>Events</th>
+            <th>Points</th>
+            <th>% of Health</th>
+          </tr>
+        </thead>
+        <tr ng-repeat="block in blocks | orderBy:'name'">
+          <td><i class="fa fa-circle" style="color: {{block.blockDef.color}}"></i></td>
+          <td>{{block.name}}</td>
+          <td>{{block.count}}</td>
+          <td>{{block.impact|number:1}}</td>
+          <td width="60%">
+            <div class="impact-container">
+              <!--
+              <div class="impact-rank"
+                style="width: {{100 * block.impact_percent * (100 / block.blockDef.importance) }}%; background-color: {{block.blockDef.color}}">
+              </div>
+              -->
+              <div class="impact-rank"
+                style="width: {{100 * block.impact_percent * (100/((impact/config.goal)*100))}}%; background-color: {{block.blockDef.color}}">
+              </div>
+
+
+            </div>
+          </td>
+
+        </tr>
+      </table>
+
+
       <h4>Actors</h4>
       <form>
         <input placeholder="Filter actors ..." ng-model="actorFilter" class="form-control">
@@ -72,7 +106,7 @@
                   class="impact-block"
                   ng-repeat="block in actor.explanation.blocks"
                   ng-show="block.count > 0"
-                  style="width: {{100 * (block.impact / actor.impact)}}%; background-color: {{blocks[block.name].color}}; height: 100%">
+                  style="width: {{100 * (block.impact / actor.impact)}}%; background-color: {{blockDefs[block.name].color}}; height: 100%">
                 </kbn-tooltip>
               </div>
             </div>
@@ -80,13 +114,5 @@
         </tr>
       </table>
     </div>
-  </div>
-  <div class="pull-right">
-    <span
-      class="label label-default"
-      ng-repeat="block in blocks"
-      ng-style="{'background-color': block.color}">
-      {{block.name}}
-    </span>
   </div>
 </div>
