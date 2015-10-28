@@ -1,8 +1,8 @@
 var _ = require('lodash');
 var $ = require('jquery');
 
-require('flot');
-require('flotTime');
+require('flot_impact');
+require('flotTime_impact');
 
 var app = require('ui/modules').get('apps/relay', []);
 
