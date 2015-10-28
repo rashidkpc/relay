@@ -26,7 +26,7 @@ module.exports = function (kibana) {
         },
         flotTime_impact$: {
           path: path.resolve(__dirname, 'bower_components/flot/jquery.flot.time'),
-          imports: 'flot'
+          imports: 'flot_impact'
         }
       }
     },
