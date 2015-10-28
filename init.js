@@ -4,9 +4,9 @@ var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
   host: 'http://localhost:9200/'
 });
-var config = require('./relay.json');
+//var config = require('./relay.json');
 var loadMethods = require('./lib/load_methods.js');
-
+var config = {}
 
 
 module.exports = function (server) {
