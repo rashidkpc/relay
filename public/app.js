@@ -6,7 +6,7 @@ require('./main.less');
 require('./chart_directive.js');
 require('ui/filters/trust_as_html');
 
-var config = require('json!../relay.json');
+var config = require('../relay.json');
 
 var impactLogo = require('plugins/relay/impact.png');
 

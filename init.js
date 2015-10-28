@@ -26,7 +26,7 @@ module.exports = function (server) {
   }).then(function () {
     var sources = loadMethods('sources');
     _.each(sources, function (source) {
-      source.start();
+      source.start(server);
     });
   });
 
