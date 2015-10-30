@@ -4,7 +4,7 @@ var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
   host: 'http://localhost:9200/'
 });
-var config = require('./relay.json');
+var config = require('./relay');
 var loadMethods = require('./lib/load_methods.js');
 
 
@@ -33,7 +33,7 @@ module.exports = function (server) {
   server.route({
     method: 'GET',
     path: '/relay/scores',
-    handler: require('./routes/scores.js')
+    handler: require('./routes/scores.js')(server)
   });
 
   server.route({

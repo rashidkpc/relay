@@ -1,7 +1,3 @@
-var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({
-  host: 'http://localhost:9200/'
-});
 var _ = require('lodash');
 var loadMethods = require('../lib/load_methods.js');
 var config = require('../relay.json');
@@ -140,54 +136,58 @@ function createBody() {
   };
 }
 
-module.exports = function (request, reply) {
+module.exports = function (server) {
+  return function (request, reply) {
 
-  client.search({
-    index: '.gitboard_events',
-    body: createBody(),
-  }).then(function (result) {
+    server.plugins.elasticsearch.client.search({
+      index: '.gitboard_events',
+      body: createBody(),
+    }).then(function (result) {
+      console.log(result);
+      var impact = _.map(result.aggregations.actors.buckets, function (actor) {
+        return {
+          name: actor.key,
+          impact: actor.actor_score.value,
+          count: actor.doc_count,
+          impact_percent: actor.actor_score.value / result.aggregations.score.value,
+          explanation: {
+            blocks: _.map(actor.blocks.buckets, function (block, blockName) {
+              return {
+                name: blockName,
+                count: block.doc_count,
+                impact: block.block_score.value,
+                impact_percent: block.block_score.value / actor.actor_score.value
+              };
+            })
+          }
+        };
+      });
 
-    var impact = _.map(result.aggregations.actors.buckets, function (actor) {
-      return {
-        name: actor.key,
-        impact: actor.actor_score.value,
-        count: actor.doc_count,
-        impact_percent: actor.actor_score.value / result.aggregations.score.value,
-        explanation: {
-          blocks: _.map(actor.blocks.buckets, function (block, blockName) {
-            return {
-              name: blockName,
-              count: block.doc_count,
-              impact: block.block_score.value,
-              impact_percent: block.block_score.value / actor.actor_score.value
-            };
-          })
-        }
-      };
+      var runningScore = 0;
+      var timeline = _.map(result.aggregations.timeline.buckets, function (bucket) {
+        return [bucket.key, bucket.score.value];
+      });
+
+      var blocks = _.map(result.aggregations.blocks.buckets, function (block, blockName) {
+        return {
+          name: blockName,
+          count: block.doc_count,
+          impact: block.block_score.value,
+          impact_percent: block.block_score.value / config.goal
+        };
+      });
+
+      reply({
+        body: createBody(),
+        blocks: blocks,
+        impact: result.aggregations.score.value,
+        actors: impact,
+        timeline: timeline,
+        events: result.hits
+      });
+
     });
 
-    var runningScore = 0;
-    var timeline = _.map(result.aggregations.timeline.buckets, function (bucket) {
-      return [bucket.key, bucket.score.value];
-    });
+  };
 
-    var blocks = _.map(result.aggregations.blocks.buckets, function (block, blockName) {
-      return {
-        name: blockName,
-        count: block.doc_count,
-        impact: block.block_score.value,
-        impact_percent: block.block_score.value / config.goal
-      };
-    });
-
-    reply({
-      blocks: blocks,
-      impact: result.aggregations.score.value,
-      actors: impact,
-      timeline: timeline,
-      events: result.hits
-    });
-
-  });
-
-};
+}
