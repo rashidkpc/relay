@@ -143,7 +143,6 @@ module.exports = function (server) {
       index: '.gitboard_events',
       body: createBody(),
     }).then(function (result) {
-      console.log(result);
       var impact = _.map(result.aggregations.actors.buckets, function (actor) {
         return {
           name: actor.key,
