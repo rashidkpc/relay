@@ -10,6 +10,11 @@ module.exports = function (server) {
 
   function createRelayIndex () {
     console.log('Trying to create relay index');
+    if (!server.plugins.elasticsearch) {
+      console.log('Elasticsearch client not available, retrying in 5s');
+      tryCreate();
+      return;
+    }
     server.plugins.elasticsearch.client.indices.create({
       index: config.index,
       body: {
@@ -22,7 +27,7 @@ module.exports = function (server) {
     }).catch(function (e) {
       if (e.body && e.body.error.type === 'index_already_exists_exception') return;
       console.log('Failed to create relay index. Trying again in 5s');
-      setTimeout(createRelayIndex, 5000);
+      tryCreate();
     }).then(function (resp) {
       if (!resp) return;
       console.log('Index created, starting sources');
@@ -32,7 +37,12 @@ module.exports = function (server) {
       });
     });
   }
+
+  function tryCreate () {
+    setTimeout(createRelayIndex, 5000);
+  }
   createRelayIndex();
+
 
   server.route({
     method: 'GET',
