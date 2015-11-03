@@ -26,10 +26,12 @@ module.exports = function (server) {
       }
     }).catch(function (e) {
       if (e.body && e.body.error.type === 'index_already_exists_exception') return;
-      console.log('Failed to create relay index. Trying again in 5s');
-      tryCreate();
     }).then(function (resp) {
-      if (!resp) return;
+      if (!resp) {
+        console.log('Failed to create relay index. Trying again in 5s');
+        tryCreate();
+        return;
+      }
       console.log('Index created, starting sources');
       var sources = loadMethods('sources');
       _.each(sources, function (source) {
