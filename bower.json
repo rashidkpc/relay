@@ -1,7 +1,0 @@
-{
-  "name": "relay",
-  "version": "0.0.1",
-  "dependencies": {
-    "flot": "~0.8.3"
-  }
-}

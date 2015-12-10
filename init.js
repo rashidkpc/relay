@@ -2,7 +2,10 @@ var Promise = require('bluebird');
 var _ = require('lodash');
 var config = require('./relay');
 var loadMethods = require('./lib/load_methods.js');
-
+var elasticsearch = require('elasticsearch');
+var client = new elasticsearch.Client({
+  host: config.elasticsearch.host,
+});
 
 
 module.exports = function (server) {
@@ -15,7 +18,7 @@ module.exports = function (server) {
       tryCreate();
       return;
     }
-    server.plugins.elasticsearch.client.indices.create({
+    client.indices.create({
       index: config.index,
       body: {
         mappings: {
@@ -25,13 +28,11 @@ module.exports = function (server) {
         }
       }
     }).catch(function (e) {
+      console.log(e);
       if (e.body && e.body.error.type === 'index_already_exists_exception') return;
     }).then(function (resp) {
-      if (!resp) {
-        console.log('Failed to create relay index. Trying again in 5s');
-        tryCreate();
-        return;
-      }
+      console.log(resp);
+
       console.log('Index created, starting sources');
       var sources = loadMethods('sources');
       _.each(sources, function (source) {
@@ -49,18 +50,18 @@ module.exports = function (server) {
   server.route({
     method: 'GET',
     path: '/relay/scores',
-    handler: require('./routes/scores.js')(server)
+    handler: require('./server/routes/scores.js')(server)
   });
 
   server.route({
     method: 'GET',
     path: '/relay/blocks',
-    handler: require('./routes/blocks.js')
+    handler: require('./server/routes/blocks.js')
   });
 
   server.route({
     method: 'GET',
     path: '/relay/config',
-    handler: require('./routes/config.js')
+    handler: require('./server/routes/config.js')
   });
 };

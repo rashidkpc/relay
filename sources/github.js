@@ -1,9 +1,13 @@
 var Source = require('../lib/source.js');
 var CronJob = require('cron').CronJob;
 var config = require('../relay.json');
-var elasticsearch = require('elasticsearch');
 var fetch = require('node-fetch');
 var _ = require('lodash');
+
+var elasticsearch = require('elasticsearch');
+var client = new elasticsearch.Client({
+  host: config.elasticsearch.host,
+});
 
 
 
@@ -20,11 +24,10 @@ module.exports = new Source('Github', {
       var endpoint = config.github.api_path;
       var URL = 'https://api.github.com/' + endpoint;
       return fetch(URL).then(function (resp) { return resp.json(); }).then(function (resp) {
-
         _.each(resp, function (event) {
           event._actor = event.actor.login;
 
-          server.plugins.elasticsearch.client.create({
+          client.create({
             index: config.index,
             type: 'event',
             id: event.id,

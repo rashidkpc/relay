@@ -1,5 +1,5 @@
 {
-  "index": ".gitboard_events",
+  "index": "relay",
   "goal": 900,
   "chart_interval": "10m",
   "refresh_seconds": 10,
@@ -8,5 +8,8 @@
   },
   "github": {
     "api_path": "orgs/elastic/events"
+  },
+  "elasticsearch": {
+    "host": "http://admin:notsecure@localhost:9200"
   }
 }
