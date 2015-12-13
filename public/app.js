@@ -44,7 +44,7 @@ app.controller('relay', function ($scope, $http, $timeout, $sce) {
   function scoreTimer() {
     $scope.getScores();
     $timeout(function () {
-      //scoreTimer();
+      scoreTimer();
     }, config.refresh_seconds * 1000);
   }
 

@@ -1,6 +1,6 @@
 {
   "index": "relay",
-  "goal": 900,
+  "goal": 200,
   "chart_interval": "10m",
   "refresh_seconds": 10,
   "actors": {
