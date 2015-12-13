@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var loadMethods = require('../lib/load_methods.js');
-var config = require('../../relay.json');
+var config = require('../lib/config');
 var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
   host: config.elasticsearch.host,

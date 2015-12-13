@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const config = require('../../relay.json');
+const config = require('./config');
 const loadMethods = require('./load_methods.js');
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
