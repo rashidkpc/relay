@@ -6,193 +6,106 @@ var client = new elasticsearch.Client({
   host: config.elasticsearch.host,
 });
 
-
-/*
-  Knobs contain:
-  query:  wrapped in a constant score and used as query key of a function_score query
-  basis: the "boost" parameter of the constant score
-  functions: array of function_score functions for mutating the basis.
-    score_mode: sum
-    boost_mode: multiply.
-
-  So to reduce the score from the basis, return a sum of all functions that is < 1, to increase, > 1
-*/
-
-var blocks = loadMethods('blocks');
-
-function createBody() {
-  var filters = _.map(blocks, function (block) {
-    return block.fn.filter;
-  });
-
-  var functions = _.map(blocks, function (block) {
-    return block.fn;
-  });
-
-  var filtersAgg = _.zipObject(_.map(blocks, function (block) {
-    return [block.name, block.fn.filter];
-  }));
-
-  return {
-    query: {
-      bool: {
-        must: [
-          {
-            function_score: {
-              filter: {
-                bool: {
-                  should: filters
-                }
-              },
-              functions: functions,
-              score_mode: 'sum',
-              boost_mode: 'replace'
-            }
-          },
-          {
-            constant_score: {
-              filter: {
-                range: {
-                  _timestamp: {
-                    gt: 'now-1d',
-                    lte: 'now'
-                  }
-                }
-              },
-              boost: 0
-            }
-          }
-        ]
-      }
-    },
-    aggs: {
-      blocks: {
-        filters: {
-          filters: filtersAgg
-        },
-        aggs: {
-          block_score: {
-            sum: {
-              script: '_score',
-              lang: 'expression'
-            }
-          }
-        }
-      },
-      timeline: {
-        date_histogram: {
-          field: '_timestamp',
-          interval: config.chart_interval,
-          min_doc_count: 0,
-          extended_bounds: {
-            min: 'now-1d',
-            max: 'now'
-          }
-        },
-        aggs: {
-          score: {
-            sum: {
-              script: '_score',
-              lang: 'expression'
-            }
-          }
-        }
-      },
-      score: {
-        sum: {
-          script: '_score',
-          lang: 'expression'
-        }
-      },
-      actors: {
-        terms: {
-          field: 'actor.login',
-          order: {actor_score: 'desc'},
-          size: 1000
-        },
-        aggs: {
-          blocks: {
-            filters: {
-              filters: filtersAgg
-            },
-            aggs: {
-              block_score: {
-                sum: {
-                  script: '_score',
-                  lang: 'expression'
-                }
-              }
-            }
-          },
-          actor_score: {
-            sum: {
-              script: '_score',
-              lang: 'expression'
-            }
-          }
-        }
-      }
-    },
-    explain:true,
-    size:10,
-    sort: [
-      {_timestamp: {order: 'desc'}},
-      {_score: {order: 'desc'}}
-    ]
-  };
-}
-
 module.exports = function (server) {
   return function (request, reply) {
+    var nestedAggs =  {
+      nested: {
+        path: '__relay_scores'
+      },
+      aggs: {
+        types: {
+          terms: {
+            field: '__relay_scores.name',
+            size: 10000
+          },
+          aggs: {
+            score: {
+              sum: {
+                field: '__relay_scores.score'
+              }
+            }
+          }
+        },
+        score: {
+          sum: {
+            field: '__relay_scores.score'
+          }
+        }
+      }
+    };
 
     client.search({
-      index: 'relay',
-      body: createBody(),
-    }).then(function (result) {
-      var impact = _.map(result.aggregations.actors.buckets, function (actor) {
-        return {
-          name: actor.key,
-          impact: actor.actor_score.value,
-          count: actor.doc_count,
-          impact_percent: actor.actor_score.value / result.aggregations.score.value,
-          explanation: {
-            blocks: _.map(actor.blocks.buckets, function (block, blockName) {
-              return {
-                name: blockName,
-                count: block.doc_count,
-                impact: block.block_score.value,
-                impact_percent: block.block_score.value / actor.actor_score.value
-              };
-            })
+      index: config.index + '*',
+      body: {
+        aggs: {
+          scores_array: nestedAggs,
+          actors: {
+            terms: {
+              field: '__relay_actor',
+              size: 10000
+            },
+            aggs: {
+              scores_array: nestedAggs
+            }
+          },
+          timeline: {
+            date_histogram: {
+              field: '@timestamp',
+              interval: '10m'
+            },
+            aggs: {
+              scores_array: nestedAggs
+            }
           }
-        };
-      });
+        },
+        size: 10,
+        sort: [{ '@timestamp' : {order : 'desc'}}]
+      }
+    }).then(result => {
 
-      var runningScore = 0;
-      var timeline = _.map(result.aggregations.timeline.buckets, function (bucket) {
-        return [bucket.key, bucket.score.value];
-      });
+      function getScores(buckets, baseScore) {
+        return buckets.map(type => {
+          return {
+            name: type.key,
+            count: type.doc_count,
+            score: type.score.value,
+            percent: type.score.value / baseScore
+          };
+        });
+      }
 
-      var blocks = _.map(result.aggregations.blocks.buckets, function (block, blockName) {
-        return {
-          name: blockName,
-          count: block.doc_count,
-          impact: block.block_score.value,
-          impact_percent: block.block_score.value / config.goal
-        };
+      var actors = _.chain(result.aggregations.actors.buckets)
+        .map(actor => {
+          return {
+            name: actor.key,
+            score: actor.scores_array.score.value,
+            count: actor.doc_count,
+            percent: actor.scores_array.score.value / result.aggregations.scores_array.score.value,
+            types: getScores(actor.scores_array.types.buckets, actor.scores_array.score.value)
+          };
+        })
+        .sortBy('score')
+        .reverse()
+        .value();
+
+      var types = getScores(result.aggregations.scores_array.types.buckets,
+        result.aggregations.scores_array.score.value);
+
+      var timeline = result.aggregations.timeline.buckets.map(bucket => {
+        return [bucket.key, bucket.scores_array.score.value];
       });
 
       reply({
-        body: createBody(),
-        blocks: blocks,
-        impact: result.aggregations.score.value,
-        actors: impact,
+        result: result,
+        types: types,
+        score: result.aggregations.scores_array.score.value,
+        actors: actors,
         timeline: timeline,
         events: result.hits
       });
 
+      //reply(result);
+
     });
-
   };
-
-}
+};

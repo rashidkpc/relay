@@ -31,34 +31,33 @@ app.controller('relay', function ($scope, $http, $timeout, $sce) {
 
   $scope.config = config;
 
-  $http.get('/relay/blocks').then(function (resp) {
-    var blockContext = require.context('../blocks');
-    $scope.blockDefs = _.chain(blockContext.keys()).map(function (blockFile) {
-      return blockContext(blockFile);
-    }).indexBy('name').value();
-
+  function init() {
     scoreTimer();
-  });
+  }
+
+  var scoreContext = require.context('../server/sources', true, /.*\/scores\/.*\.js/);
+  $scope.typeDefs = _.chain(scoreContext.keys())
+    .map(scoreFile => scoreContext(scoreFile))
+    .indexBy((scoreType, i) => scoreContext.keys()[i].split('/')[1] + ':' + scoreType.name)
+    .value();
 
   function scoreTimer() {
     $scope.getScores();
     $timeout(function () {
-      scoreTimer();
+      //scoreTimer();
     }, config.refresh_seconds * 1000);
   }
 
 
   $scope.getScores = function () {
     $http.get('/relay/scores').then(function (resp) {
-      $scope.impact = resp.data.impact;
+      $scope.score = resp.data.score;
       $scope.actors = resp.data.actors;
-      $scope.blocks = _.map(resp.data.blocks, function (block) {
-        return _.extend(block, {blockDef: $scope.blockDefs[block.name]});
-      });
-      $scope.events = _.each(resp.data.events.hits, function (event) {
-        _.extend(event, {blocks: _.map(event.matched_queries, function (blockName) {
-            return $scope.blockDefs[blockName];
-          })});
+      $scope.events = resp.data.events.hits;
+
+      $scope.types = resp.data.types;
+      _.each($scope.types, type => {
+        type.typeDef = $scope.typeDefs[type.name];
       });
 
       var goalCursor = 0;
@@ -70,4 +69,6 @@ app.controller('relay', function ($scope, $http, $timeout, $sce) {
       $scope.timeline = [{data: resp.data.timeline, shadowSize:0, lines: {lineWidth: 6}}];
     });
   };
+
+  init();
 });

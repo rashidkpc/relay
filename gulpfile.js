@@ -25,7 +25,6 @@ var include = [
   'node_modules',
   'public',
   'server',
-  'sources',
   'bower_components',
   'relay.json',
   'init.js'
@@ -107,7 +106,7 @@ gulp.task('package', ['build'], function (done) {
 });
 
 gulp.task('dev', ['sync'], function (done) {
-  gulp.watch(['package.json', 'init.js', 'relay.json', 'index.js', 'sources/*', 'bower_components/**/*', 'public/**/*', 'server/**/*'], ['sync', 'lint']);
+  gulp.watch(['package.json', 'init.js', 'relay.json', 'index.js', 'bower_components/**/*', 'public/**/*', 'server/**/*'], ['sync', 'lint']);
 });
 
 
