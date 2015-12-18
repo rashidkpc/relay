@@ -1,16 +1,21 @@
 {
   "index": "relay",
-  "goal": 200,
+  "goal": 150,
   "chart_interval": "10m",
   "refresh_seconds": 10,
   "actors": {
-    "list_length": 10
+    "list_length": 100
   },
   "github": {
-    "api_path": "orgs/elastic/events"
+    "api_path": "repos/elastic/kibana/events"
   },
   "hipchat": {
-    "apikey": ""
+    "apikey": "",
+    "channels": ["kibana"]
+  },
+  "irc": {
+    "nick": "relaytable",
+    "channels": ["#relaytable"]
   },
   "elasticsearch": {
     "host": "http://admin:notsecure@localhost:9200"
