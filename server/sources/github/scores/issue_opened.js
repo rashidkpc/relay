@@ -7,7 +7,7 @@ module.exports = new Score ('issue_opened', {
       return 2.3;
     }
   },
-  color: '#66c',
+  color: '#D0D102',
   toHTML: event => {
     return '<a target="_blank" href="' + event._source.payload.issue.html_url + '">' +
     event._source.repo.name + '#' +

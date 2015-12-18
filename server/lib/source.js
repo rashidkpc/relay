@@ -5,10 +5,14 @@ const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
   host: config.elasticsearch.host,
 });
-
+const actors = loadMethods('../actors');
 
 module.exports = class Source {
   constructor(type, config) {
+
+    const actorMap = _.zipObject(actors.map((actor) =>
+      [actor.sources[type] || actor.name , actor.name]));
+
     const scoreFns = loadMethods('../sources/' + type + '/scores');
 
     /* TODO: this.template for elasticsearch templates specific to this type */
@@ -19,17 +23,22 @@ module.exports = class Source {
 
       const index = 'relay_' + this.type;
       const id = _.get(event, config.id);
-      event['@timestamp'] = _.get(event, config.timestamp) || (new Date()).toISOString();
-      event.__relay_actor = _.get(event, config.actor);
+      const extractedActor = _.get(event, config.actor);
+      const extractedTimestamp = _.get(event, config.timestamp);
+
+      event['@timestamp'] = extractedTimestamp || (new Date()).toISOString();
+      event.__relay_actor = actorMap[extractedActor] || extractedActor;
 
       if (!index || id == null || event.__relay_actor == null) {
-        console.log('Invalid event', index, id, event.__relay_actor);
+        console.log('Invalid event', index, id, event);
         return;
       }
 
-      const scorePromises = scoreFns.map(score => score.fn(event));
+      const scorePromises =
 
-      Promise.all(scorePromises).then(scores => {
+      Promise
+      .all(scoreFns.map(score => score.fn(event)))
+      .then(scores => {
         event.__relay_total_score = 0;
         event.__relay_scores = _.compact(scores.map((score, i) => {
           if (score == null) return null;

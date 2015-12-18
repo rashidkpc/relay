@@ -9,6 +9,9 @@
   "github": {
     "api_path": "orgs/elastic/events"
   },
+  "hipchat": {
+    "apikey": ""
+  },
   "elasticsearch": {
     "host": "http://admin:notsecure@localhost:9200"
   }

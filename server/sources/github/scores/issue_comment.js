@@ -3,9 +3,15 @@ const _ = require('lodash');
 
 module.exports = new Score ('issue_comment', {
   fn: event => {
-    if (_.get(event, 'payload.issue.pull_request.url') == null && event.type === 'IssueCommentEvent') {
-      return 1;
-    }
+    if (event.type !== 'IssueCommentEvent') return;
+
+    const size = event.payload.comment.body.length;
+
+    if (size > 10000) return 5;
+    if (size > 1000)  return 3;
+    if (size > 100)   return 1;
+    return 0.3;
+
   },
   color: '#c66',
   toHTML: event => {

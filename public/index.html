@@ -6,11 +6,11 @@
   <p>Score measure the relative value of events processed by the system. Score are determined by scoring functions tied to data sources. Data sources and scoring functions can be added in the <code>server/sources</code> directory</p>
   <div class="row">
     <div class="col-md-7 relay-charts">
-      <h4>Project Health ({{score | number:1}})</h4>
+      <h4><small>{{score | number:1}}</small> Total</h4>
       <div ng-if="config" chart="burn" height=150 max=100></div>
-      <h4>Activity</h4>
+      <h4><small>Current</small> Activity</h4>
       <div ng-if="config" chart="timeline" height=150></div>
-      <h4>Recent Events</h4>
+      <h4><small>Recent</small> Events</h4>
       <div>
         <table class="table table-condensed table-striped">
           <thead>
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="col-md-5">
-      <h4>Event Types</h4>
+      <h4>Catagories</h4>
       <table class="table table-striped">
         <thead>
           <tr>
@@ -53,7 +53,7 @@
           <td><i class="fa fa-circle" style="color: {{type.typeDef.color}}"></i></td>
           <td>{{type.name}}</td>
           <td>{{type.count}}</td>
-          <td>{{type.score|number:1}}</td>
+          <td>{{type.score|number:2}}</td>
           <td width="60%">
             <div class="impact-container">
               <div class="impact-rank"
@@ -68,7 +68,7 @@
       </table>
 
 
-      <h4>Actors</h4>
+      <h4>Players</h4>
       <form>
         <input placeholder="Filter actors ..." ng-model="actorFilter" class="form-control">
       </form>
@@ -92,7 +92,7 @@
             {{actor.count}}
           </td>
           <td width="1%">
-            {{actor.score | number:1}}
+            {{actor.score | number:2}}
           </td>
           <td width="60%">
             <div class="impact-container">

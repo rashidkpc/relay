@@ -1,14 +1,17 @@
-var _ = require('lodash');
-var loadMethods = require('../lib/load_methods.js');
-var config = require('../lib/config');
-var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({
+const _ = require('lodash');
+const loadMethods = require('../lib/load_methods.js');
+const actorNames = _.pluck(loadMethods('../actors'), 'name');
+const config = require('../lib/config');
+const elasticsearch = require('elasticsearch');
+const client = new elasticsearch.Client({
   host: config.elasticsearch.host,
 });
 
+// It would make sense to only shown known actors by default.
+// Need a switch to show unknown actors
 module.exports = function (server) {
   return function (request, reply) {
-    var nestedAggs =  {
+    const nestedAggs =  {
       nested: {
         path: '__relay_scores'
       },
@@ -37,6 +40,29 @@ module.exports = function (server) {
     client.search({
       index: config.index + '*',
       body: {
+        query: {
+          bool: {
+            filter: {
+              bool: {
+                must: [
+                  {
+                    range: {
+                      '@timestamp': {
+                        gte: 'now-1d',
+                        lte: 'now'
+                      }
+                    }
+                  },
+                  {
+                    terms: {
+                      '__relay_actor': actorNames
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
         aggs: {
           scores_array: nestedAggs,
           actors: {
@@ -74,7 +100,7 @@ module.exports = function (server) {
         });
       }
 
-      var actors = _.chain(result.aggregations.actors.buckets)
+      const actors = _.chain(result.aggregations.actors.buckets)
         .map(actor => {
           return {
             name: actor.key,
@@ -88,10 +114,10 @@ module.exports = function (server) {
         .reverse()
         .value();
 
-      var types = getScores(result.aggregations.scores_array.types.buckets,
+      const types = getScores(result.aggregations.scores_array.types.buckets,
         result.aggregations.scores_array.score.value);
 
-      var timeline = result.aggregations.timeline.buckets.map(bucket => {
+      const timeline = result.aggregations.timeline.buckets.map(bucket => {
         return [bucket.key, bucket.scores_array.score.value];
       });
 
@@ -103,9 +129,6 @@ module.exports = function (server) {
         timeline: timeline,
         events: result.hits
       });
-
-      //reply(result);
-
     });
   };
 };
