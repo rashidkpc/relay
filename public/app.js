@@ -22,6 +22,8 @@ var app = require('ui/modules').get('apps/relay', []);
 var unsafeNotifications = require('ui/notify')._notifs;
 var ConfigTemplate = require('ui/ConfigTemplate');
 
+require('ui/routes').enable();
+
 require('ui/routes')
   .when('/', {
     template: require('plugins/relay/index.html'),
