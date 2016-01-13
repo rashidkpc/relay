@@ -1,7 +1,7 @@
 const Score = require('../../../lib/score');
 const _ = require('lodash');
 
-module.exports = new Score ('pull_merged', {
+module.exports = new Score ('pull_opened', {
   fn: event => {
 
     const isAMatch = event.type === 'PullRequestEvent' &&
