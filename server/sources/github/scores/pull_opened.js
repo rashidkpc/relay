@@ -11,9 +11,9 @@ module.exports = new Score ('pull_merged', {
       return 0.5; // Bonus for opening a pull
     }
   },
-  color: '#9E16F2',
+  color: '#E716F2',
   toHTML: event => {
-    return '<a target="_blank" href="' + event._source.payload.issue.html_url + '">' +
+    return 'PR Opened: <a target="_blank" href="' + event._source.payload.issue.html_url + '">' +
     event._source.repo.name + '#' +
     event._source.payload.issue.number + '</a>';
   }
