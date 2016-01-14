@@ -3,7 +3,8 @@ const _ = require('lodash');
 
 module.exports = new Score ('pull_comment', {
   fn: event => {
-    if (_.get(event, 'payload.issue.pull_request.url') && event.type === 'IssueCommentEvent') {
+    const isPrComment = _.get(event, 'payload.issue.pull_request.url') && event.type === 'IssueCommentEvent';
+    if (isPrComment) {
       return 0.5; // Bonus for commenting on a pull
     }
   },

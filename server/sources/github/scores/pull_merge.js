@@ -4,7 +4,8 @@ const _ = require('lodash');
 module.exports = new Score ('pull_merged', {
   fn: event => {
 
-    const isMergeEvent = _.get(event, 'payload.pull_request.merged_by.url') &&
+
+    const isMergeEvent = _.get(event, 'payload.pull_request.merged') &&
       event.type === 'PullRequestEvent' &&
       _.get(event, 'payload.pull_request.state') === 'closed';
 
