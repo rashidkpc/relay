@@ -16,7 +16,8 @@ module.exports = new Source('github', {
   start: function github(server) {
     const indexGithubAPI = () => {
       const endpoint = config.github.api_path;
-      const URL = 'https://api.github.com/' + endpoint;
+      const credentials = config.github.credentials;
+      const URL = 'https://' + credentials + '@api.github.com/' + endpoint;
       return fetch(URL)
         .then(resp => resp.json())
         .then(resp => _.each(resp, event => this.store(event)));
