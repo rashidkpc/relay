@@ -1,6 +1,11 @@
 const Actor = require('../lib/actor');
 
 module.exports = new Actor('simianhacker', {
+  aliases: {
+  },
   sources: {
+    github: {
+      email: ''
+    }
   }
 });

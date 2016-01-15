@@ -3,6 +3,11 @@ const CronJob = require('cron').CronJob;
 const config = require('../../lib/config');
 const fetch = require('node-fetch');
 const _ = require('lodash');
+const loadMethods = require('../../lib/load_methods');
+const actors = loadMethods('../actors')
+const actorsNames = actors.map((actor) => {
+  return _.get(actor, 'aliases.github') || actor.name;
+});
 
 const elasticsearch = require('elasticsearch');
 const client = new elasticsearch.Client({
@@ -14,17 +19,31 @@ module.exports = new Source('github', {
   id: 'id',
   actor: 'actor.login',
   start: function github(server) {
-    const indexGithubAPI = () => {
-      const endpoint = config.github.api_path;
+    const getRepoEvents = (repo) => {
+      console.log('Githubbing: ', repo);
       const credentials = config.github.credentials;
+
+      const endpoint = 'repos/' + repo + '/events';
       const URL = 'https://' + credentials + '@api.github.com/' + endpoint;
+
       return fetch(URL)
         .then(resp => resp.json())
-        .then(resp => _.each(resp, event => this.store(event)));
+        .then(resp => _.each(resp, event => this.store(event)))
+        .catch(err => {
+          console.log('Github failure for:', repo);
+          console.log(err);
+        });
+    }
+
+    const indexGithubAPI = () => {
+      _.each(actorsNames, (actor) => {
+        _.each(config.github.actor_repos, (repo) => getRepoEvents(actor + '/' + repo));
+      });
+
+      _.each(config.github.other_repos, repo => getRepoEvents(repo));
     };
 
-    new CronJob('5 */1 * * * *', function () {
-      console.log('Every 1 minutes index github api');
+    new CronJob('5 * * * * *', function () {
       indexGithubAPI();
     }, null, true);
   }

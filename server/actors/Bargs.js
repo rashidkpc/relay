@@ -1,7 +1,12 @@
 const Actor = require('../lib/actor');
 
 module.exports = new Actor('Bargs', {
-  sources: {
+  aliases: {
     hipchat: 'Matt'
+  },
+  sources: {
+    github: {
+      email: 'mbargar@gmail.com'
+    }
   }
 });

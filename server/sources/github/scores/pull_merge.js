@@ -9,7 +9,7 @@ module.exports = new Score ('pull_merged', {
       _.get(event, 'payload.pull_request.state') === 'closed';
 
     if (isMergeEvent) {
-      return 3.5; // Bonus for commenting on a pull
+      return 2.5;
     }
   },
   color: '#9E16F2',

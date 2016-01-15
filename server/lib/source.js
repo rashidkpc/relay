@@ -11,7 +11,7 @@ module.exports = class Source {
   constructor(type, config) {
 
     const actorMap = _.zipObject(actors.map((actor) =>
-      [actor.sources[type] || actor.name , actor.name]));
+      [actor.aliases[type] || actor.name , actor.name]));
 
     const scoreFns = loadMethods('../sources/' + type + '/scores');
 
@@ -28,6 +28,8 @@ module.exports = class Source {
 
       event['@timestamp'] = extractedTimestamp || (new Date()).toISOString();
       event.__relay_actor = actorMap[extractedActor] || extractedActor;
+      event.__relay_known = actorMap[extractedActor] ? true : false;
+
 
       if (!index || id == null || event.__relay_actor == null) {
         console.log('Invalid event', index, id, event);

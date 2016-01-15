@@ -1,7 +1,12 @@
 const Actor = require('../lib/actor');
 
 module.exports = new Actor('stormpython', {
-  sources: {
+  aliases: {
     hipchat: 'shelby'
+  },
+  sources: {
+    github: {
+      email: 'shelbyjsturgis@gmail.com'
+    }
   }
 });
