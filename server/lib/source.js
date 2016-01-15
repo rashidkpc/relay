@@ -10,8 +10,11 @@ const actors = loadMethods('../actors');
 module.exports = class Source {
   constructor(type, config) {
 
-    const actorMap = _.zipObject(actors.map((actor) =>
+    const actorNames = _.zipObject(actors.map((actor) =>
       [actor.aliases[type] || actor.name , actor.name]));
+
+    const actorMap = _.zipObject(actors.map((actor) =>
+      [actor.aliases[type] || actor.name , actor]));
 
     const scoreFns = loadMethods('../sources/' + type + '/scores');
 
@@ -23,13 +26,15 @@ module.exports = class Source {
 
       const index = 'relay_' + this.type;
       const id = _.get(event, config.id);
-      const extractedActor = _.get(event, config.actor);
       const extractedTimestamp = _.get(event, config.timestamp);
+      const extractedActor = _.get(event, config.actor);
+
+      const actorName = actorNames[extractedActor] || extractedActor;
+      const actorDefinition = actorMap[actorName];
 
       event['@timestamp'] = extractedTimestamp || (new Date()).toISOString();
-      event.__relay_actor = actorMap[extractedActor] || extractedActor;
-      event.__relay_known = actorMap[extractedActor] ? true : false;
-
+      event.__relay_known = actorNames[extractedActor] ? true : false;
+      event.__relay_actor = actorName;
 
       if (!index || id == null || event.__relay_actor == null) {
         console.log('Invalid event', index, id, event);
@@ -39,7 +44,7 @@ module.exports = class Source {
       const scorePromises =
 
       Promise
-      .all(scoreFns.map(score => score.fn(event)))
+      .all(scoreFns.map(score => score.fn(event, actorDefinition)))
       .then(scores => {
         event.__relay_total_score = 0;
         event.__relay_scores = _.compact(scores.map((score, i) => {

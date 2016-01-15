@@ -4,7 +4,7 @@ const config = require('../../lib/config');
 const fetch = require('node-fetch');
 const _ = require('lodash');
 const loadMethods = require('../../lib/load_methods');
-const actors = loadMethods('../actors')
+const actors = loadMethods('../actors');
 const actorsNames = actors.map((actor) => {
   return _.get(actor, 'aliases.github') || actor.name;
 });
@@ -33,7 +33,7 @@ module.exports = new Source('github', {
           console.log('Github failure for:', repo);
           console.log(err);
         });
-    }
+    };
 
     const indexGithubAPI = () => {
       _.each(actorsNames, (actor) => {
