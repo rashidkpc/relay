@@ -54,6 +54,7 @@ module.exports = function (server) {
             dynamic_templates : dynamicTemplates,
             properties: {
               '@timestamp': { type: 'date', doc_values: true },
+              '__relay_total_score': { type: 'double' },
               '__relay_actor': { type: 'string', doc_values: true, index: 'not_analyzed' },
               '__relay_scores': {
                 type: 'nested',
