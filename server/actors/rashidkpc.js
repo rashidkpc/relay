@@ -8,7 +8,8 @@ module.exports = new Actor('rashidkpc', {
   },
   sources: {
     github: {
-      email: 'github.fliplap@spamgourmet.com'
+      email: 'github.fliplap@spamgourmet.com',
+      repos: ['kibana', 'relay', 'timelion']
     }
   }
 });

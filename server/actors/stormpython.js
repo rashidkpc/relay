@@ -6,7 +6,8 @@ module.exports = new Actor('stormpython', {
   },
   sources: {
     github: {
-      email: 'shelbyjsturgis@gmail.com'
+      email: 'shelbyjsturgis@gmail.com',
+      repos: ['kibana']
     }
   }
 });

@@ -4,5 +4,9 @@ module.exports = class Actor {
     this.name = name;
     this.aliases = config.aliases;
     this.sources = config.sources;
+
+    this.getAliasFor = source => {
+      return this.aliases[source] || this.name;
+    };
   }
 };
