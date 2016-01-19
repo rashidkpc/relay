@@ -5,7 +5,9 @@ module.exports = new Actor('w33ble', {
   },
   sources: {
     github: {
-      email: 'joe.fleming@gmail.com'
+      email: 'joe.fleming@gmail.com',
+      repos: ['kibana']
+
     }
   }
 });

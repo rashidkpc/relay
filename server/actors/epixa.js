@@ -2,11 +2,13 @@ const Actor = require('../lib/actor');
 
 module.exports = new Actor('epixa', {
   aliases: {
-    hipchat: 'Court'
+    hipchat: 'Court',
+    irc: 'court'
   },
   sources: {
     github: {
-      email: 'court@epixa.com'
+      email: 'court@epixa.com',
+      repos: ['kibana']
     }
   }
 });

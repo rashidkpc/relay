@@ -36,14 +36,17 @@ module.exports = new Source('github', {
     };
 
     const indexGithubAPI = () => {
-      _.each(actorsNames, (actor) => {
-        _.each(config.github.actor_repos, (repo) => getRepoEvents(actor + '/' + repo));
+      _.each(actors, (actor) => {
+        const repos = _.get(actor, 'sources.github.repos') || [];
+        _.each(repos, (repo) => {
+          getRepoEvents(actor.getAliasFor('github') + '/' + repo);
+        });
       });
 
       _.each(config.github.other_repos, repo => getRepoEvents(repo));
     };
 
-    new CronJob('5 * * * * *', function () {
+    new CronJob('45 * * * * *', function () {
       indexGithubAPI();
     }, null, true);
   }

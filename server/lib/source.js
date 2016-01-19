@@ -45,7 +45,7 @@ module.exports = class Source {
         return;
       }
 
-      Promise
+      return Promise
       .all(scoreFns.map(score => score.fn(event, actorDefinition)))
       .then(scores => {
         event.relay_total_score = 0;

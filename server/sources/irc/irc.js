@@ -8,7 +8,7 @@ module.exports = new Source('irc', {
   actor: 'from',
   timestamp: '@timestamp',
   start: function github(server) {
-    const client = new irc.Client('chat.freenode.net', 'relaytable', {
+    const client = new irc.Client('chat.freenode.net', config.irc.nick, {
       channels: config.irc.channels,
     });
 
