@@ -1,4 +1,5 @@
 const Score = require('../../../lib/score');
+const priorityBonus = require('../../../lib/priority_bonus');
 const _ = require('lodash');
 
 module.exports = new Score ('pull_opened', {
@@ -8,7 +9,8 @@ module.exports = new Score ('pull_opened', {
       _.get(event, 'payload.pull_request.state') === 'open';
 
     if (isAMatch) {
-      return 0.5; // Bonus for opening a pull
+      const bonus = priorityBonus(event);
+      return 0.5 + bonus; // Bonus for opening a pull
     }
   },
   color: '#E716F2',

@@ -1,11 +1,13 @@
 const Score = require('../../../lib/score');
+const priorityBonus = require('../../../lib/priority_bonus');
 const _ = require('lodash');
 
 module.exports = new Score ('pull_review_comment', {
   fn: event => {
     const isPrComment = event.type === 'PullRequestReviewCommentEvent';
     if (isPrComment) {
-      return 0.75; // Bonus for commenting on a pull
+      const bonus = priorityBonus(event);
+      return 0.75 + bonus; // Bonus for commenting on a pull
     }
   },
   color: '#DB9704',

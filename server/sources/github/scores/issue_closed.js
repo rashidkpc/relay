@@ -1,10 +1,12 @@
 const Score = require('../../../lib/score');
+const priorityBonus = require('../../../lib/priority_bonus');
 const _ = require('lodash');
 
 module.exports = new Score ('issue_closed', {
   fn: event => {
     if (_.get(event, 'type') === 'IssuesEvent' && _.get(event, 'payload.action') === 'closed') {
-      return 1.6;
+      const bonus = priorityBonus(event);
+      return 1.6 + bonus;
     }
   },
   color: '#00A1CB',
