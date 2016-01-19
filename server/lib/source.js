@@ -33,8 +33,8 @@ module.exports = class Source {
       const actorDefinition = actorMap[actorName];
 
       event['@timestamp'] = extractedTimestamp || (new Date()).toISOString();
-      event.__relay_known = actorNames[extractedActor] ? true : false;
-      event.__relay_actor = actorName;
+      event.relay_known = actorNames[extractedActor] ? true : false;
+      event.relay_actor = actorName;
 
       if (!index || id == null || event.relay_actor == null) {
         console.log('Invalid event', index, id, event);
