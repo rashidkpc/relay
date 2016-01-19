@@ -7,7 +7,7 @@ module.exports = new Actor('lukasolson', {
   sources: {
     github: {
       email: 'olson.lukas@gmail.com',
-      repos: ['kibana']
+      repos: ['kibana', 'x-plugins']
     }
   }
 });

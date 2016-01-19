@@ -8,7 +8,7 @@ module.exports = new Actor('epixa', {
   sources: {
     github: {
       email: 'court@epixa.com',
-      repos: ['kibana']
+      repos: ['kibana', 'x-plugins']
     }
   }
 });

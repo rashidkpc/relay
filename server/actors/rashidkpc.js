@@ -9,7 +9,7 @@ module.exports = new Actor('rashidkpc', {
   sources: {
     github: {
       email: 'github.fliplap@spamgourmet.com',
-      repos: ['kibana', 'relay', 'timelion']
+      repos: ['kibana', 'relay', 'timelion', 'x-plugins']
     }
   }
 });
