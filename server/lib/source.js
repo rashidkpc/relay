@@ -55,6 +55,7 @@ module.exports = class Source {
           return {name: this.type + ':' + scoreFns[i].name, source: this.type, score: score};
         }));
 
+        event.relay_score_names = event.relay_scores.map((obj) => obj.name);
 
         client.index({
           index: index,
