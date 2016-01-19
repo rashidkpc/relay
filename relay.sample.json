@@ -7,7 +7,8 @@
     "list_length": 100
   },
   "github": {
-    "api_path": "repos/elastic/kibana/events",
+    "actor_repos": ["kibana"],
+    "other_repos": ["elastic/kibana"],
     "credentials": "foo:bar"
   },
   "hipchat": {
