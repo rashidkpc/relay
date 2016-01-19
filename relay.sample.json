@@ -7,7 +7,7 @@
     "list_length": 100
   },
   "github": {
-    "other_repos": ["elastic/kibana"],
+    "other_repos": ["elastic/kibana", "elastic/x-plugins", "elastic/timelion", "kreeware/makelogs", "kreeware/grunt-esvm", "kreeware/es-vagrant"],
     "credentials": "foo:bar"
   },
   "irc": {
