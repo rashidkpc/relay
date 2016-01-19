@@ -31,7 +31,7 @@ module.exports = new Source('github', {
         .then(resp => _.each(resp, event => this.store(event)))
         .catch(err => {
           console.log('Github failure for:', repo);
-          console.log(err);
+          console.log(err.stack);
         });
     };
 

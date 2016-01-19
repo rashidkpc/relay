@@ -24,6 +24,10 @@ module.exports = class Source {
 
     this.store = event => {
 
+      if (!_.isPlainObject(event)) {
+        return;
+      }
+
       const index = 'relay_' + this.type;
       const id = _.get(event, config.id);
       const extractedTimestamp = _.get(event, config.timestamp);
@@ -40,8 +44,6 @@ module.exports = class Source {
         console.log('Invalid event', index, id, event);
         return;
       }
-
-      const scorePromises =
 
       Promise
       .all(scoreFns.map(score => score.fn(event, actorDefinition)))
