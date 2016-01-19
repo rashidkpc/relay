@@ -13,25 +13,25 @@ module.exports = function (server) {
   return function (request, reply) {
     const nestedAggs =  {
       nested: {
-        path: '__relay_scores'
+        path: 'relay_scores'
       },
       aggs: {
         types: {
           terms: {
-            field: '__relay_scores.name',
+            field: 'relay_scores.name',
             size: 10000
           },
           aggs: {
             score: {
               sum: {
-                field: '__relay_scores.score'
+                field: 'relay_scores.score'
               }
             }
           }
         },
         score: {
           sum: {
-            field: '__relay_scores.score'
+            field: 'relay_scores.score'
           }
         }
       }
@@ -55,7 +55,7 @@ module.exports = function (server) {
                   },
                   {
                     terms: {
-                      '__relay_actor': actorNames
+                      'relay_actor': actorNames
                     }
                   }
                 ]
@@ -67,7 +67,7 @@ module.exports = function (server) {
           scores_array: nestedAggs,
           actors: {
             terms: {
-              field: '__relay_actor',
+              field: 'relay_actor',
               size: 10000
             },
             aggs: {
