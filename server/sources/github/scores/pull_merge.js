@@ -15,9 +15,10 @@ module.exports = new Score ('pull_merged', {
   },
   color: '#9E16F2',
   toHTML: event => {
-    return 'PR Merged: <a target="_blank" href="' + event._source.payload.issue.html_url + '">' +
-    event._source.repo.name + '#' +
-    event._source.payload.issue.number + '</a>';
+    const htmlUrl = _.get(event._source, 'payload.pull_request.html_url');
+    const repoName = _.get(event._source, 'repo.name');
+    const issueNumber = _.get(event._source, 'payload.number');
+    return `<a target="_blank" href="${htmlUrl}">${repoName}#${issueNumber}</a>`;
   }
 });
 

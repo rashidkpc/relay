@@ -23,11 +23,11 @@
           </thead>
           <tr ng-repeat="event in events">
             <td>{{event.sort[0]|date:'short'}}</td>
-            <td width="1%"><img class="avatar" height=20 width=20 src="https://avatars.githubusercontent.com/{{event._source.__relay_actor}}"></td>
-            <td>{{event._source.__relay_actor}}</td>
-            <td>{{event._source.__relay_total_score}}</td>
+            <td width="1%"><img class="avatar" height=20 width=20 src="https://avatars.githubusercontent.com/{{event._source.relay_actor}}"></td>
+            <td>{{event._source.relay_actor}}</td>
+            <td>{{event._source.relay_total_score}}</td>
             <td>
-              <span ng-repeat="type in event._source.__relay_scores" ng-init="type.typeDef = typeDefs[type.name]">
+              <span ng-repeat="type in event._source.relay_scores" ng-init="type.typeDef = typeDefs[type.name]">
                 <i class="fa fa-circle" style="color: {{type.typeDef.color}}"></i>
                 <span ng-bind-html='type.typeDef.toHTML(event)|trustAsHtml'></span>
               </span>

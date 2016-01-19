@@ -24,6 +24,10 @@ module.exports = class Source {
 
     this.store = event => {
 
+      if (!_.isPlainObject(event)) {
+        return;
+      }
+
       const index = 'relay_' + this.type;
       const id = _.get(event, config.id);
       const extractedTimestamp = _.get(event, config.timestamp);
@@ -33,10 +37,10 @@ module.exports = class Source {
       const actorDefinition = actorMap[actorName];
 
       event['@timestamp'] = extractedTimestamp || (new Date()).toISOString();
-      event.__relay_known = actorNames[extractedActor] ? true : false;
-      event.__relay_actor = actorName;
+      event.relay_known = actorNames[extractedActor] ? true : false;
+      event.relay_actor = actorName;
 
-      if (!index || id == null || event.__relay_actor == null) {
+      if (!index || id == null || event.relay_actor == null) {
         console.log('Invalid event', index, id, event);
         return;
       }
@@ -44,10 +48,10 @@ module.exports = class Source {
       return Promise
       .all(scoreFns.map(score => score.fn(event, actorDefinition)))
       .then(scores => {
-        event.__relay_total_score = 0;
-        event.__relay_scores = _.compact(scores.map((score, i) => {
+        event.relay_total_score = 0;
+        event.relay_scores = _.compact(scores.map((score, i) => {
           if (score == null) return null;
-          event.__relay_total_score += score;
+          event.relay_total_score += score;
           return {name: this.type + ':' + scoreFns[i].name, source: this.type, score: score};
         }));
 
@@ -66,10 +70,10 @@ module.exports = class Source {
         event._id
           - from this.idPath
         Each type gets its own index.
-        event.__relay_actor
+        event.relay_actor
           - from this.actorPath
           - Should be normalize for cross-index search
-        event.__relay_scores
+        event.relay_scores
           - [] by default
           - {name: 'issueComment', score: 0.33}
 

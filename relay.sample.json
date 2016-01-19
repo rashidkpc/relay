@@ -10,10 +10,6 @@
     "other_repos": ["elastic/kibana"],
     "credentials": "foo:bar"
   },
-  "hipchat": {
-    "apikey": "",
-    "channels": ["kibana"]
-  },
   "irc": {
     "nick": "relaytable",
     "channels": ["#relaytable"]
