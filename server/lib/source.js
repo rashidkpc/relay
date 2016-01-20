@@ -29,9 +29,13 @@ module.exports = class Source {
       }
 
       const index = 'relay_' + this.type;
-      const id = _.get(event, config.id);
-      const extractedTimestamp = _.get(event, config.timestamp);
-      const extractedActor = _.get(event, config.actor);
+
+      // This take a function or a string. If a string, the string is the path to the value in the event
+      // For example 'event.meta.username' as a string, or you could do...
+      // function (event) { return event.meta.username; }
+      const id = _.isFunction(config.id) ? config.id(event) : _.get(event, config.id);
+      const extractedTimestamp = _.isFunction(config.timestamp) ? config.timestamp(event) : _.get(event, config.timestamp);
+      const extractedActor = _.isFunction(config.actor) ? config.actor(event) : _.get(event, config.actor);
 
       const actorName = actorNames[extractedActor] || extractedActor;
       const actorDefinition = actorMap[actorName];
