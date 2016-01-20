@@ -9,7 +9,7 @@ module.exports = new Score ('create_branch', {
       return scorePerBranch;
     }
   },
-  color: '#FF4900',
+  color: '#50A162',
   toHTML: (event, actor) => {
     const repoName = _.get(event._source, 'repo.name');
     const branch = _.get(event._source, 'payload.ref');

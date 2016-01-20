@@ -17,7 +17,7 @@ module.exports = new Score ('issue_comment', {
     return points + bonus;
 
   },
-  color: '#c66',
+  color: '#F29E3D',
   toHTML: event => {
     return '<a target="_blank" href="' + event._source.payload.issue.html_url + '">' +
     event._source.repo.name + '#' +
