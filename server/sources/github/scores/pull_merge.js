@@ -15,7 +15,7 @@ module.exports = new Score ('pull_merged', {
       return 0.5 + bonus; // Bonus for closing on a pull
     }
   },
-  color: '#9E16F2',
+  color: '#920753',
   toHTML: event => {
     const htmlUrl = _.get(event._source, 'payload.pull_request.html_url');
     const repoName = _.get(event._source, 'repo.name');

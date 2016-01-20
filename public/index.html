@@ -99,7 +99,7 @@
               <div class="impact-rank" style="width: {{100 * (actor.score / actors[0].score)}}%">
                 <kbn-tooltip text="{{type.count}} {{type.name}} ({{(type.score / actor.score) * 100 | number:0}}%)" placement="bottom" append-to-body="1"
                   class="impact-type"
-                  ng-repeat="type in actor.types"
+                  ng-repeat="type in actor.types | orderBy:'name'"
                   ng-show="type.count > 0"
                   style="width: {{100 * (type.score / actor.score)}}%; background-color: {{typeDefs[type.name].color}}; height: 100%">
                 </kbn-tooltip>

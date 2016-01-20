@@ -13,7 +13,7 @@ module.exports = new Score ('push_event', {
       return score;
     }
   },
-  color: '#80488C',
+  color: '#610977',
   toHTML: (event, actor) => {
     const sha = _.get(event._source, 'payload.head');
     const repoName = _.get(event._source, 'repo.name');

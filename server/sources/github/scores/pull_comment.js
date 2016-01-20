@@ -10,7 +10,7 @@ module.exports = new Score ('pull_comment', {
       return 0.5 + bonus; // Bonus for commenting on a pull
     }
   },
-  color: '#F2CE16',
+  color: '#72003E',
   toHTML: event => {
     return '<a target="_blank" href="' + event._source.payload.issue.html_url + '">' +
     event._source.repo.name + '#' +

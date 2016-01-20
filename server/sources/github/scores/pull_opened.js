@@ -13,7 +13,7 @@ module.exports = new Score ('pull_opened', {
       return 0.5 + bonus; // Bonus for opening a pull
     }
   },
-  color: '#E716F2',
+  color: '#CB2680',
   toHTML: event => {
     const htmlUrl = _.get(event._source, 'payload.pull_request.html_url');
     const repoName = _.get(event._source, 'repo.name');
