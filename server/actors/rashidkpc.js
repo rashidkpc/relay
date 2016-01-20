@@ -4,7 +4,8 @@ module.exports = new Actor('rashidkpc', {
   aliases: {
     irc: 'rashidkpc',
     github: 'rashidkpc',
-    hipchat: 'rashidkpc'
+    hipchat: 'rashidkpc',
+    discourse: 'Rashid_Khan'
   },
   sources: {
     github: {

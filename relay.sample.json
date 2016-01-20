@@ -14,6 +14,11 @@
     "nick": "relaytable",
     "channels": ["#relaytable"]
   },
+  "discourse": {
+    "url": "https://discuss.elastic.co/user_actions.json",
+    "api_username": "Some_One",
+    "api_key": "52034750384750842378fhrefuiorfh34072"
+  },
   "elasticsearch": {
     "host": "http://admin:notsecure@localhost:9200"
   }
