@@ -56,7 +56,7 @@ module.exports = function (server) {
               '@timestamp': { type: 'date', doc_values: true },
               'relay_total_score': { type: 'double' },
               'relay_actor': { type: 'string', doc_values: true, index: 'not_analyzed' },
-              'relay_score_names': { type: 'string', doc_value: true, index: 'not_analyzed' },
+              'relay_score_names': { type: 'string', doc_values: true, index: 'not_analyzed' },
               'relay_scores': {
                 type: 'nested',
                 properties: {
