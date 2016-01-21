@@ -10,9 +10,10 @@
     "other_repos": [
       "elastic/support-dev-help",
       "elastic/dev",
-      "elastic/kibana", 
+      "elastic/kibana",
       "elastic/x-plugins",
       "elastic/timelion",
+      "elastic/generator-kibana-plugin",
       "kreeware/makelogs",
       "kreeware/grunt-esvm",
       "kreeware/es-vagrant"
