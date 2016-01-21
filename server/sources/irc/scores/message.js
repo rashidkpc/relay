@@ -5,7 +5,7 @@ module.exports = new Score ('message', {
   fn: event => {
     return event.message.length / 1000;
   },
-  color: '#OD4D4B',
+  color: '#84B7CB',
   toHTML: function (event) {
     return event._source.message;
   }
