@@ -33,7 +33,7 @@ var dynamicTemplates = [ {
 module.exports = function (server) {
   // Routes and basically anything the server does at start
 
-  function createRelayIndex () {
+  function createRelayIndex() {
     console.log('Trying to create relay index');
     if (!server.plugins.elasticsearch) {
       console.log('Elasticsearch client not available, retrying in 5s');
@@ -42,8 +42,8 @@ module.exports = function (server) {
     }
 
     client.indices.putTemplate({
-        name: config.index,
-        body: {
+      name: config.index,
+      body: {
         template: config.index + '*',
         settings: {
           number_of_shards: 2,
@@ -81,7 +81,7 @@ module.exports = function (server) {
     });
   }
 
-  function tryCreate () {
+  function tryCreate() {
     setTimeout(createRelayIndex, 5000);
   }
   createRelayIndex();
