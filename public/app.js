@@ -4,6 +4,7 @@ var logoUrl = require('./logo.png');
 
 require('./main.less');
 require('./chart_directive.js');
+require('./pie_directive.js');
 require('ui/filters/trust_as_html');
 
 var config = require('../relay');
@@ -60,6 +61,14 @@ app.controller('relay', function ($scope, $http, $timeout, $sce) {
       $scope.types = resp.data.types;
       _.each($scope.types, type => {
         type.typeDef = $scope.typeDefs[type.name];
+      });
+
+      $scope.typePie = _.map($scope.types, type => {
+        return {
+          label: type.name,
+          data: type.score,
+          color: type.typeDef.color
+        };
       });
 
       var goalCursor = 0;

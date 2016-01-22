@@ -40,13 +40,15 @@
     </div>
     <div class="col-md-5">
       <h4>Catagories</h4>
+
+
       <table class="table table-striped">
         <thead>
           <tr>
             <th colspan=2>Type</th>
             <th>Events</th>
             <th>Score</th>
-            <th>% of Total</th>
+            <th colspan=2>% of Total</th>
           </tr>
         </thead>
         <tr ng-repeat="type in types | orderBy:'name'">
@@ -54,19 +56,19 @@
           <td>{{type.name}}</td>
           <td>{{type.count}}</td>
           <td>{{type.score|number:2}}</td>
+          <td>{{type.score/score*100|number:0}}%</td>
           <td width="60%">
             <div class="impact-container">
               <div class="impact-rank"
-                style="width: {{type.score/score*100}}%; background-color: {{type.typeDef.color}}">
+                style="width: {{type.score/types[0].score*100}}%; background-color: {{type.typeDef.color}}">
               </div>
-
-
             </div>
           </td>
-
         </tr>
       </table>
 
+      <!--<div pie="typePie">
+      </div>-->
 
       <h4>Players</h4>
       <form>
