@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 module.exports = new Score ('post', {
   fn: event => {
-    return event.excerpt.length / 100;
+    return event.excerpt.length / 500;
   },
   color: '#1D9A91',
   toHTML: function (event) {
