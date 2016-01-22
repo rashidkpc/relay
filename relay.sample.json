@@ -9,6 +9,7 @@
   "github": {
     "other_repos": [
       "elastic/support-dev-help",
+      "elastic/elasticsearch-shield-js",
       "elastic/dev",
       "elastic/kibana",
       "elastic/x-plugins",
