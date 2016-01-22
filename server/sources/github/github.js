@@ -46,7 +46,7 @@ module.exports = new Source('github', {
       _.each(config.github.other_repos, repo => getRepoEvents(repo));
     };
 
-    new CronJob('45 * * * * *', function () {
+    new CronJob('0 */2 * * * *', function () {
       indexGithubAPI();
     }, null, true);
   }
