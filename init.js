@@ -88,7 +88,7 @@ module.exports = function (server) {
 
 
   server.route({
-    method: 'GET',
+    method: 'POST',
     path: '/relay/scores',
     handler: require('./server/routes/scores.js')(server)
   });

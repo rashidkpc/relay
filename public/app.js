@@ -30,7 +30,9 @@ require('ui/routes')
     template: require('plugins/relay/index.html'),
   });
 
-app.controller('relay', function ($scope, $http, $timeout, $sce) {
+app.controller('relay', function ($scope, $http, $timeout, $sce, timefilter) {
+  timefilter.enabled = true;
+  $scope.timefilter = timefilter;
 
   $scope.config = config;
 
@@ -51,15 +53,21 @@ app.controller('relay', function ($scope, $http, $timeout, $sce) {
     }, config.refresh_seconds * 1000);
   }
 
-
   $scope.getScores = function () {
-    $http.get('/relay/scores').then(function (resp) {
+    $http.post('/relay/scores', {
+      time: {
+        gt: timefilter.getBounds().min.valueOf(),
+        lte: timefilter.getBounds().max.valueOf()
+      }
+    }).then(function (resp) {
       $scope.score = resp.data.score;
       $scope.actors = resp.data.actors;
       $scope.events = resp.data.events.hits;
 
       $scope.types = resp.data.types;
+      $scope.topTypeScore = 0;
       _.each($scope.types, type => {
+        $scope.topTypeScore = type.score > $scope.topTypeScore ? type.score : $scope.topTypeScore;
         type.typeDef = $scope.typeDefs[type.name];
       });
 
@@ -80,6 +88,8 @@ app.controller('relay', function ($scope, $http, $timeout, $sce) {
       $scope.timeline = [{data: resp.data.timeline, shadowSize:0, lines: {lineWidth: 6}}];
     });
   };
+
+  $scope.$watch('timefilter.time', $scope.getScores);
 
   init();
 });

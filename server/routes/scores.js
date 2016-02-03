@@ -48,8 +48,8 @@ module.exports = function (server) {
                   {
                     range: {
                       '@timestamp': {
-                        gte: 'now-1d',
-                        lte: 'now'
+                        gt: request.payload.time.gt,
+                        lte: request.payload.time.lte
                       }
                     }
                   },
