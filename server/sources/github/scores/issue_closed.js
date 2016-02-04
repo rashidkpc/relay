@@ -6,7 +6,7 @@ module.exports = new Score ('issue_closed', {
   fn: event => {
     if (_.get(event, 'type') === 'IssuesEvent' && _.get(event, 'payload.action') === 'closed') {
       const bonus = priorityBonus(event);
-      return 1.6 + bonus;
+      return 0.25 + bonus;
     }
   },
   color: '#F25D3D',

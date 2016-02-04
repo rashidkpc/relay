@@ -77,7 +77,7 @@ module.exports = function (server) {
           timeline: {
             date_histogram: {
               field: '@timestamp',
-              interval: '10m'
+              interval: ((request.payload.time.lte - request.payload.time.gt) / 100) + 'ms'
             },
             aggs: {
               scores_array: nestedAggs
