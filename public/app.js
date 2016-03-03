@@ -6,6 +6,8 @@ require('./main.less');
 require('./chart_directive.js');
 require('./pie_directive.js');
 require('ui/filters/trust_as_html');
+require('ui/autoload/all');
+
 
 var config = require('../relay');
 
@@ -54,7 +56,7 @@ app.controller('relay', function ($scope, $http, $timeout, $sce, timefilter) {
   }
 
   $scope.getScores = function () {
-    $http.post('/relay/scores', {
+    $http.post('../api/relay/scores', {
       time: {
         gt: timefilter.getBounds().min.valueOf(),
         lte: timefilter.getBounds().max.valueOf()

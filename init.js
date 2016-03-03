@@ -10,18 +10,15 @@ var client = new elasticsearch.Client({
 var dynamicTemplates = [ {
   string_fields : {
     mapping : {
-      type : 'multi_field',
+      type : 'string',
+      index : 'not_analyzed',
+      type : 'string',
       doc_values: true,
       fields : {
         search : {
           index : 'analyzed',
           omit_norms : true,
           type : 'string',
-        },
-        '{name}' : {
-          index : 'not_analyzed',
-          type : 'string',
-          doc_values: true,
         }
       }
     },
@@ -89,19 +86,19 @@ module.exports = function (server) {
 
   server.route({
     method: 'POST',
-    path: '/relay/scores',
+    path: '/api/relay/scores',
     handler: require('./server/routes/scores.js')(server)
   });
 
   server.route({
     method: 'GET',
-    path: '/relay/blocks',
+    path: '/api/relay/blocks',
     handler: require('./server/routes/blocks.js')
   });
 
   server.route({
     method: 'GET',
-    path: '/relay/config',
+    path: '/api/relay/config',
     handler: require('./server/routes/config.js')
   });
 
