@@ -7,7 +7,7 @@ module.exports = new Score ('pull_comment', {
     const isPrComment = _.get(event, 'payload.issue.pull_request.url') && event.type === 'IssueCommentEvent';
     if (isPrComment) {
       const bonus = priorityBonus(event);
-      return 0.5 + bonus; // Bonus for commenting on a pull
+      return 0.1 + bonus; // Bonus for commenting on a pull
     }
   },
   color: '#72003E',

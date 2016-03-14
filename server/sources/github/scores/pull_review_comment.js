@@ -7,7 +7,7 @@ module.exports = new Score ('pull_review_comment', {
     const isPrComment = event.type === 'PullRequestReviewCommentEvent';
     if (isPrComment) {
       const bonus = priorityBonus(event);
-      return 0.75 + bonus; // Bonus for commenting on a pull
+      return 0.2 + bonus; // Bonus for commenting on code in a pull
     }
   },
   color: '#D74193',
